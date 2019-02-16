@@ -31,7 +31,7 @@ namespace BimManufact.WebApi.Controllers
             });
         }
 
-        [Route("api/manufacturers/{manufacturerId}")]
+        [Route("api/manufacturers/{manufacturerId}", Name = nameof(GetManufacturer))]
         [ResponseType(typeof(ManufacturerResponse))]
         public async Task<IHttpActionResult> GetManufacturer(int manufacturerId)
         {
@@ -129,7 +129,7 @@ namespace BimManufact.WebApi.Controllers
                 Name = manufacturer.Name
             };
 
-            return CreatedAtRoute("DefaultApi", new { id = manufacturer.ManufacturerId }, response);
+            return CreatedAtRoute(nameof(GetManufacturer), new { manufacturerId = response.ManufacturerId }, response);
         }
 
         [Route("api/manufacturers/{manufacturerId}")]
