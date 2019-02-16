@@ -196,6 +196,10 @@
     <Compile Include="Migrations\201902161146543_Initial.Designer.cs">
       <DependentUpon>201902161146543_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902161510147_New_ManufacturerId_Name.cs" />
+    <Compile Include="Migrations\201902161510147_New_ManufacturerId_Name.Designer.cs">
+      <DependentUpon>201902161510147_New_ManufacturerId_Name.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BimManufactWebApiContext.cs" />
     <Compile Include="Models\Manufacturer.cs" />
@@ -288,6 +292,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201902161146543_Initial.resx">
       <DependentUpon>201902161146543_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902161510147_New_ManufacturerId_Name.resx">
+      <DependentUpon>201902161510147_New_ManufacturerId_Name.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

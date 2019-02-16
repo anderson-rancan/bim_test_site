@@ -4,7 +4,7 @@ namespace BimManufact.WebApi.Models
 {
     public class Manufacturer
     {
-        public int Id { get; set; }
+        public int ManufacturerId { get; set; }
 
         [Required]
         [StringLength(100)]

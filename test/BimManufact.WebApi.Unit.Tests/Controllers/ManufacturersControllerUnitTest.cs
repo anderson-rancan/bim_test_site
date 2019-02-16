@@ -45,7 +45,7 @@ namespace BimManufact.WebApi.Unit.Tests.Controllers
         {
             return new Manufacturer
             {
-                Id = 1,
+                ManufacturerId = 1,
                 Name = "First Manufacturer"
             };
         }

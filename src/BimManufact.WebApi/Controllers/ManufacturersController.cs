@@ -50,7 +50,7 @@ namespace BimManufact.WebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != manufacturer.Id)
+            if (id != manufacturer.ManufacturerId)
             {
                 return BadRequest();
             }
@@ -88,7 +88,7 @@ namespace BimManufact.WebApi.Controllers
             _bimManufactWebApiContext.Manufacturers.Add(manufacturer);
             await _bimManufactWebApiContext.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = manufacturer.Id }, manufacturer);
+            return CreatedAtRoute("DefaultApi", new { id = manufacturer.ManufacturerId }, manufacturer);
         }
 
         // DELETE: api/Manufacturers/5
@@ -118,7 +118,7 @@ namespace BimManufact.WebApi.Controllers
 
         private bool ManufacturerExists(int id)
         {
-            return _bimManufactWebApiContext.Manufacturers.Count(e => e.Id == id) > 0;
+            return _bimManufactWebApiContext.Manufacturers.Count(e => e.ManufacturerId == id) > 0;
         }
     }
 }
