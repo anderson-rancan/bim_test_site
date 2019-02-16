@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using BimManufact.WebApi.Controllers;
@@ -11,41 +10,34 @@ using NUnit.Framework;
 namespace BimManufact.WebApi.Unit.Tests.Controllers
 {
     [TestFixture]
-    public class ManufacturersControllerUnitTest
+    public class ManufacturersControllerUnitTest : ControllerUnitTestBase
     {
         private ManufacturersController Controller { get; set; }
 
-        [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
-            DbSet<Manufacturer> dbSet = new TestDbSet<Manufacturer>();
+            base.SetUp();
 
-            var bimManufactWebApiContextMock = new Mock<IBimManufactWebApiContext>();
-            bimManufactWebApiContextMock
-                .SetupGet(_ => _.Manufacturers)
-                .Returns(dbSet);
-
-            Controller = new ManufacturersController(bimManufactWebApiContextMock.Object);
+            Controller = new ManufacturersController(WebApiContextMock.Object, UserResolverMock.Object);
         }
 
         [Test]
         public async Task PostManufacturer_ShouldReturn_SameManufacturer()
         {
             // ARRANGE
-            var newManufacturer = GetManufacturerExample();
+            var newManufacturer = GetManufacturerRequestExample();
 
             // ACT
-            var result = await Controller.PostManufacturer(newManufacturer) as CreatedAtRouteNegotiatedContentResult<Manufacturer>;
+            var result = await Controller.PostManufacturer(newManufacturer) as CreatedAtRouteNegotiatedContentResult<ManufacturerResponse>;
 
             // ASSERT
             result.Content.Should().BeEquivalentTo(newManufacturer);
         }
 
-        private Manufacturer GetManufacturerExample()
+        private ManufacturerRequest GetManufacturerRequestExample()
         {
-            return new Manufacturer
+            return new ManufacturerRequest
             {
-                ManufacturerId = 1,
                 Name = "First Manufacturer"
             };
         }

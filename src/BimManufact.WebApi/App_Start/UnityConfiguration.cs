@@ -1,6 +1,7 @@
-﻿using BimManufact.WebApi.Models;
+﻿using System;
 using Microsoft.Practices.Unity;
-using System;
+using BimManufact.WebApi.Models;
+using BimManufact.WebApi.Resolver;
 
 namespace BimManufact.WebApi
 {
@@ -10,6 +11,7 @@ namespace BimManufact.WebApi
         {
             var container = new UnityContainer();
             container.RegisterType<IBimManufactWebApiContext, BimManufactWebApiContext>(new HierarchicalLifetimeManager());
+            container.RegisterType<IDummyUserResolver, DummyUserResolver>(new HierarchicalLifetimeManager());
 
             return container;
         });

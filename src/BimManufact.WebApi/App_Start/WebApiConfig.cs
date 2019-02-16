@@ -18,6 +18,12 @@ namespace BimManufact.WebApi
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Routes.MapHttpRoute(
+                name: "ManufacturerProductsApi",
+                routeTemplate: "api/manufacturers/{manufacturerId}/products/{productId}",
+                defaults: new { id = RouteParameter.Optional }
+            );
         }
     }
 }

@@ -1,69 +1,93 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using BimManufact.WebApi.Models;
+using BimManufact.WebApi.Resolver;
 
 namespace BimManufact.WebApi.Controllers
 {
-    public class ManufacturersController : ApiController
+    public class ManufacturersController : ApiControllerBase
     {
-        private IBimManufactWebApiContext _bimManufactWebApiContext;
-
-        public ManufacturersController(IBimManufactWebApiContext bimManufactWebApiContext)
+        public ManufacturersController(IBimManufactWebApiContext bimManufactWebApiContext, IDummyUserResolver userResolver)
+            : base(bimManufactWebApiContext, userResolver)
         {
-            _bimManufactWebApiContext = bimManufactWebApiContext;
+            
         }
 
-        // GET: api/Manufacturers
-        public IQueryable<Manufacturer> GetManufacturers()
+        [Route("api/manufacturers")]
+        public IQueryable<ManufacturerResponse> GetManufacturers()
         {
-            return _bimManufactWebApiContext.Manufacturers;
+            return WebApiContext.Manufacturers.Select(_ => new ManufacturerResponse
+            {
+                ManufacturerId = _.ManufacturerId,
+                Name = _.Name,
+                ProductsCount = WebApiContext.Products.Count(p => p.ManufacturerId == _.ManufacturerId)
+            });
         }
 
-        // GET: api/Manufacturers/5
-        [ResponseType(typeof(Manufacturer))]
-        public async Task<IHttpActionResult> GetManufacturer(int id)
+        [Route("api/manufacturers/{manufacturerId}")]
+        [ResponseType(typeof(ManufacturerResponse))]
+        public async Task<IHttpActionResult> GetManufacturer(int manufacturerId)
         {
-            Manufacturer manufacturer = await _bimManufactWebApiContext.Manufacturers.FindAsync(id);
+            var manufacturer = await WebApiContext.Manufacturers.FindAsync(manufacturerId);
+
             if (manufacturer == null)
             {
                 return NotFound();
             }
 
-            return Ok(manufacturer);
+            var result = new ManufacturerResponse
+            {
+                ManufacturerId = manufacturerId,
+                Name = manufacturer.Name,
+                ProductsCount = await WebApiContext.Products.CountAsync(_ => _.ManufacturerId == manufacturerId)
+            };
+
+            return Ok(result);
         }
 
-        // PUT: api/Manufacturers/5
+        [Route("api/manufacturers/{manufacturerId}")]
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutManufacturer(int id, Manufacturer manufacturer)
+        public async Task<IHttpActionResult> PutManufacturer(int manufacturerId, ManufacturerRequest manufacturerRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != manufacturer.ManufacturerId)
+            if (manufacturerId != manufacturerRequest.ManufacturerId)
             {
                 return BadRequest();
             }
 
-            _bimManufactWebApiContext.Entry(manufacturer).State = EntityState.Modified;
+            var manufacturer = await WebApiContext.Manufacturers.FirstOrDefaultAsync(_ => _.ManufacturerId == manufacturerId);
+
+            if (manufacturer != null)
+            {
+                manufacturer.AuditLastModifiedBy = UserResolver.CurrentUserId;
+                manufacturer.AuditLastModifiedDate = DateTime.Now;
+                manufacturer.Name = manufacturerRequest.Name;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+            WebApiContext.Entry(manufacturer).State = EntityState.Modified;
 
             try
             {
-                await _bimManufactWebApiContext.SaveChangesAsync();
+                await WebApiContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ManufacturerExists(id))
+                if (!ManufacturerExists(manufacturerId))
                 {
                     return NotFound();
                 }
@@ -76,49 +100,74 @@ namespace BimManufact.WebApi.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Manufacturers
-        [ResponseType(typeof(Manufacturer))]
-        public async Task<IHttpActionResult> PostManufacturer(Manufacturer manufacturer)
+        [Route("api/manufacturers")]
+        [ResponseType(typeof(ManufacturerResponse))]
+        public async Task<IHttpActionResult> PostManufacturer(ManufacturerRequest manufacturerRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _bimManufactWebApiContext.Manufacturers.Add(manufacturer);
-            await _bimManufactWebApiContext.SaveChangesAsync();
+            var now = DateTime.Now;
 
-            return CreatedAtRoute("DefaultApi", new { id = manufacturer.ManufacturerId }, manufacturer);
+            var manufacturer = new Manufacturer
+            {
+                Name = manufacturerRequest.Name,
+                AuditCreatedBy = UserResolver.CurrentUserId,
+                AuditCreatedDate = now,
+                AuditLastModifiedBy = UserResolver.CurrentUserId,
+                AuditLastModifiedDate = now
+            };
+
+            WebApiContext.Manufacturers.Add(manufacturer);
+            await WebApiContext.SaveChangesAsync();
+
+            var response = new ManufacturerResponse
+            {
+                ManufacturerId = manufacturer.ManufacturerId,
+                Name = manufacturer.Name
+            };
+
+            return CreatedAtRoute("DefaultApi", new { id = manufacturer.ManufacturerId }, response);
         }
 
-        // DELETE: api/Manufacturers/5
-        [ResponseType(typeof(Manufacturer))]
-        public async Task<IHttpActionResult> DeleteManufacturer(int id)
+        [Route("api/manufacturers/{manufacturerId}")]
+        [ResponseType(typeof(ManufacturerResponse))]
+        public async Task<IHttpActionResult> DeleteManufacturer(int manufacturerId)
         {
-            Manufacturer manufacturer = await _bimManufactWebApiContext.Manufacturers.FindAsync(id);
+            var manufacturer = await WebApiContext.Manufacturers.FindAsync(manufacturerId);
+
             if (manufacturer == null)
             {
                 return NotFound();
             }
 
-            _bimManufactWebApiContext.Manufacturers.Remove(manufacturer);
-            await _bimManufactWebApiContext.SaveChangesAsync();
+            WebApiContext.Manufacturers.Remove(manufacturer);
+            await WebApiContext.SaveChangesAsync();
 
-            return Ok(manufacturer);
+            var response = new ManufacturerResponse
+            {
+                ManufacturerId = manufacturerId,
+                Name = manufacturer.Name
+            };
+
+            return Ok(response);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _bimManufactWebApiContext.Dispose();
+                WebApiContext.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
         private bool ManufacturerExists(int id)
         {
-            return _bimManufactWebApiContext.Manufacturers.Count(e => e.ManufacturerId == id) > 0;
+            return WebApiContext.Manufacturers.Count(e => e.ManufacturerId == id) > 0;
         }
     }
 }

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BimManufact.WebApi.Models
 {
-    public class Manufacturer : ManufacturerBase
+    public class Product : ProductBase
     {
-        public ICollection<Product> Products { get; set; }
-
         [Required]
         public Guid AuditCreatedBy { get; set; }
 

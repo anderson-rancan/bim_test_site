@@ -17,6 +17,7 @@ namespace BimManufact.WebApi.Models
         Task<int> SaveChangesAsync();
 
         DbSet<Manufacturer> Manufacturers { get; }
+        DbSet<Product> Products { get; set; }
     }
 
     public class BimManufactWebApiContext : DbContext, IBimManufactWebApiContext
@@ -33,5 +34,6 @@ namespace BimManufact.WebApi.Models
         }
 
         public DbSet<Manufacturer> Manufacturers { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }

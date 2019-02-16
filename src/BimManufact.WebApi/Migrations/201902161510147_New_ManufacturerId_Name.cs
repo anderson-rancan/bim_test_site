@@ -8,16 +8,16 @@ namespace BimManufact.WebApi.Migrations
         public override void Up()
         {
             DropPrimaryKey("dbo.Manufacturers");
+            DropColumn("dbo.Manufacturers", "Id");
             AddColumn("dbo.Manufacturers", "ManufacturerId", c => c.Int(nullable: false, identity: true));
             AddPrimaryKey("dbo.Manufacturers", "ManufacturerId");
-            DropColumn("dbo.Manufacturers", "Id");
         }
         
         public override void Down()
         {
-            AddColumn("dbo.Manufacturers", "Id", c => c.Int(nullable: false, identity: true));
             DropPrimaryKey("dbo.Manufacturers");
             DropColumn("dbo.Manufacturers", "ManufacturerId");
+            AddColumn("dbo.Manufacturers", "Id", c => c.Int(nullable: false, identity: true));
             AddPrimaryKey("dbo.Manufacturers", "Id");
         }
     }
