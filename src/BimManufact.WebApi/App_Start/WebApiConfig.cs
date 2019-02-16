@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
+﻿using System.Web.Http;
+using BimManufact.WebApi.Resolver;
 
 namespace BimManufact.WebApi
 {
@@ -10,6 +8,7 @@ namespace BimManufact.WebApi
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
+            config.DependencyResolver = new UnityDependencyResolver(UnityConfiguration.Instance);
 
             // Web API routes
             config.MapHttpAttributeRoutes();

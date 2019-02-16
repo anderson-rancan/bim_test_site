@@ -8,66 +8,62 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
-using System.Web.Http.OData;
-using System.Web.Http.OData.Routing;
+using System.Web.Http.Description;
 using BimManufact.WebApi.Models;
 
 namespace BimManufact.WebApi.Controllers
 {
-    /*
-    The WebApiConfig class may require additional changes to add a route for this controller. Merge these statements into the Register method of the WebApiConfig class as applicable. Note that OData URLs are case sensitive.
-
-    using System.Web.Http.OData.Builder;
-    using System.Web.Http.OData.Extensions;
-    using BimManufact.WebApi.Models;
-    ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-    builder.EntitySet<Manufacturer>("Manufacturers");
-    config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
-    */
-    public class ManufacturersController : ODataController
+    public class ManufacturersController : ApiController
     {
-        private BimManufactWebApiContext db = new BimManufactWebApiContext();
+        private IBimManufactWebApiContext _bimManufactWebApiContext;
 
-        // GET: odata/Manufacturers
-        [EnableQuery]
+        public ManufacturersController(IBimManufactWebApiContext bimManufactWebApiContext)
+        {
+            _bimManufactWebApiContext = bimManufactWebApiContext;
+        }
+
+        // GET: api/Manufacturers
         public IQueryable<Manufacturer> GetManufacturers()
         {
-            return db.Manufacturers;
+            return _bimManufactWebApiContext.Manufacturers;
         }
 
-        // GET: odata/Manufacturers(5)
-        [EnableQuery]
-        public SingleResult<Manufacturer> GetManufacturer([FromODataUri] int key)
+        // GET: api/Manufacturers/5
+        [ResponseType(typeof(Manufacturer))]
+        public async Task<IHttpActionResult> GetManufacturer(int id)
         {
-            return SingleResult.Create(db.Manufacturers.Where(manufacturer => manufacturer.Id == key));
-        }
-
-        // PUT: odata/Manufacturers(5)
-        public async Task<IHttpActionResult> Put([FromODataUri] int key, Delta<Manufacturer> patch)
-        {
-            Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Manufacturer manufacturer = await db.Manufacturers.FindAsync(key);
+            Manufacturer manufacturer = await _bimManufactWebApiContext.Manufacturers.FindAsync(id);
             if (manufacturer == null)
             {
                 return NotFound();
             }
 
-            patch.Put(manufacturer);
+            return Ok(manufacturer);
+        }
+
+        // PUT: api/Manufacturers/5
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> PutManufacturer(int id, Manufacturer manufacturer)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != manufacturer.Id)
+            {
+                return BadRequest();
+            }
+
+            _bimManufactWebApiContext.Entry(manufacturer).State = EntityState.Modified;
 
             try
             {
-                await db.SaveChangesAsync();
+                await _bimManufactWebApiContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ManufacturerExists(key))
+                if (!ManufacturerExists(id))
                 {
                     return NotFound();
                 }
@@ -76,89 +72,53 @@ namespace BimManufact.WebApi.Controllers
                     throw;
                 }
             }
-
-            return Updated(manufacturer);
-        }
-
-        // POST: odata/Manufacturers
-        public async Task<IHttpActionResult> Post(Manufacturer manufacturer)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.Manufacturers.Add(manufacturer);
-            await db.SaveChangesAsync();
-
-            return Created(manufacturer);
-        }
-
-        // PATCH: odata/Manufacturers(5)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public async Task<IHttpActionResult> Patch([FromODataUri] int key, Delta<Manufacturer> patch)
-        {
-            Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Manufacturer manufacturer = await db.Manufacturers.FindAsync(key);
-            if (manufacturer == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(manufacturer);
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ManufacturerExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(manufacturer);
-        }
-
-        // DELETE: odata/Manufacturers(5)
-        public async Task<IHttpActionResult> Delete([FromODataUri] int key)
-        {
-            Manufacturer manufacturer = await db.Manufacturers.FindAsync(key);
-            if (manufacturer == null)
-            {
-                return NotFound();
-            }
-
-            db.Manufacturers.Remove(manufacturer);
-            await db.SaveChangesAsync();
 
             return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        // POST: api/Manufacturers
+        [ResponseType(typeof(Manufacturer))]
+        public async Task<IHttpActionResult> PostManufacturer(Manufacturer manufacturer)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _bimManufactWebApiContext.Manufacturers.Add(manufacturer);
+            await _bimManufactWebApiContext.SaveChangesAsync();
+
+            return CreatedAtRoute("DefaultApi", new { id = manufacturer.Id }, manufacturer);
+        }
+
+        // DELETE: api/Manufacturers/5
+        [ResponseType(typeof(Manufacturer))]
+        public async Task<IHttpActionResult> DeleteManufacturer(int id)
+        {
+            Manufacturer manufacturer = await _bimManufactWebApiContext.Manufacturers.FindAsync(id);
+            if (manufacturer == null)
+            {
+                return NotFound();
+            }
+
+            _bimManufactWebApiContext.Manufacturers.Remove(manufacturer);
+            await _bimManufactWebApiContext.SaveChangesAsync();
+
+            return Ok(manufacturer);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                _bimManufactWebApiContext.Dispose();
             }
             base.Dispose(disposing);
         }
 
-        private bool ManufacturerExists(int key)
+        private bool ManufacturerExists(int id)
         {
-            return db.Manufacturers.Count(e => e.Id == key) > 0;
+            return _bimManufactWebApiContext.Manufacturers.Count(e => e.Id == id) > 0;
         }
     }
 }
