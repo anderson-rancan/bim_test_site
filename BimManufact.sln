@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BimManufact.WebApi", "src\BimManufact.WebApi\BimManufact.WebApi.csproj", "{6FAFB578-326A-4946-915A-EF177AFB94EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BimManufact.WebApi.Unit.Tests", "test\BimManufact.WebApi.Unit.Tests\BimManufact.WebApi.Unit.Tests.csproj", "{162FDE55-F4E4-41AF-B030-89AA7F8B5FD9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{653BFA90-D4A2-410D-8861-3AA44ECC8DAE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6FAFB578-326A-4946-915A-EF177AFB94EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FAFB578-326A-4946-915A-EF177AFB94EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FAFB578-326A-4946-915A-EF177AFB94EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FAFB578-326A-4946-915A-EF177AFB94EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{162FDE55-F4E4-41AF-B030-89AA7F8B5FD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{162FDE55-F4E4-41AF-B030-89AA7F8B5FD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{162FDE55-F4E4-41AF-B030-89AA7F8B5FD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{162FDE55-F4E4-41AF-B030-89AA7F8B5FD9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{162FDE55-F4E4-41AF-B030-89AA7F8B5FD9} = {653BFA90-D4A2-410D-8861-3AA44ECC8DAE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4B647F01-FAE2-4D68-9635-8AA745CF73F4}
+	EndGlobalSection
+EndGlobal
