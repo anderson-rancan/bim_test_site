@@ -160,6 +160,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
+    <Compile Include="Clients\IManufacturerClient.cs" />
     <Compile Include="Clients\ManufacturerClient.cs" />
     <Compile Include="Clients\ProductClient.cs" />
     <Compile Include="Controllers\HomeController.cs" />
