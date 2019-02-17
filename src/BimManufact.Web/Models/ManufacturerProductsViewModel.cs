@@ -1,15 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace BimManufact.Web.Models
 {
     public class ManufacturerProductsViewModel
     {
-        public ManufacturerViewModel Manufacturer { get; set; }
+        public ManufacturerViewModel Manufacturer { get; set; } = new ManufacturerViewModel();
 
-        [Required]
-        [StringLength(100)]
-        public string Name { get; set; }
-
-        public int ProductId { get; set; }
+        public IEnumerable<ProductViewModel> Products { get; set; } = Enumerable.Empty<ProductViewModel>();
     }
 }

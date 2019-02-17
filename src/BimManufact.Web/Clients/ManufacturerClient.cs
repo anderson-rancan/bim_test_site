@@ -1,13 +1,10 @@
-﻿using System;
-using System.Configuration;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace BimManufact.Web.Clients
 {
-    public class ManufacturerClient : IManufacturerClient
+    public class ManufacturerClient : ClientBase, IManufacturerClient
     {
-        private readonly string _webApiConfigVariable = "webapiurl";
         private readonly string _getManufacturersAddress = "manufacturers";
         private readonly string _getManufacturerAddress = "manufacturers/{0}";
 
@@ -49,14 +46,6 @@ namespace BimManufact.Web.Clients
             {
                 return await client.PutAsJsonAsync(string.Format(_getManufacturerAddress, id), value);
             }
-        }
-
-        private HttpClient GetWebApiClient()
-        {
-            return new HttpClient
-            {
-                BaseAddress = new Uri(ConfigurationManager.AppSettings[_webApiConfigVariable])
-            };
         }
     }
 }

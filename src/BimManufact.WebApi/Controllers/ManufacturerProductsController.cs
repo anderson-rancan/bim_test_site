@@ -71,14 +71,18 @@ namespace BimManufact.WebApi.Controllers
                 return BadRequest();
             }
 
-            var product = new Product
+            var product = await WebApiContext.Products.FirstOrDefaultAsync(_ => _.ManufacturerId == manufacturerId && _.ProductId == productId);
+
+            if (product != null)
             {
-                AuditLastModifiedBy = UserResolver.CurrentUserId,
-                AuditLastModifiedDate = DateTime.Now,
-                ManufacturerId = productRequest.ManufacturerId,
-                Name = productRequest.Name,
-                ProductId = productRequest.ProductId
-            };
+                product.AuditLastModifiedBy = UserResolver.CurrentUserId;
+                product.AuditLastModifiedDate = DateTime.Now;
+                product.Name = productRequest.Name;
+            }
+            else
+            {
+                return NotFound();
+            }
 
             WebApiContext.Entry(product).State = EntityState.Modified;
 
