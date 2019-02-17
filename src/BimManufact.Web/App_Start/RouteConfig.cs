@@ -15,8 +15,8 @@ namespace BimManufact.Web
 
             routes.MapRoute(
                 name: "Manufacturer",
-                url: "manufacturer/{id}/{action}",
-                defaults: new { controller = "Manufacturer", id = 0, action = "Index" });
+                url: "manufacturer/{manufacturerId}/{action}/{id}",
+                defaults: new { controller = "Manufacturer", manufacturerId = 0, action = "Index", id = UrlParameter.Optional });
 
             routes.MapRoute(
                 name: "Default",

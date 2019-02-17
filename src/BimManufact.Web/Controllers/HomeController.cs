@@ -60,9 +60,9 @@ namespace BimManufact.Web.Controllers
             return View(request);
         }
 
-        public async Task<ActionResult> Delete(int id = -1)
+        public async Task<ActionResult> Delete(int id = 0)
         {
-            if (id < 0)
+            if (id <= 0)
             {
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "Mandatory argument was not specified");
             }

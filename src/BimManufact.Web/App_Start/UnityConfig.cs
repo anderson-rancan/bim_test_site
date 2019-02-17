@@ -11,6 +11,7 @@ namespace BimManufact.Web
         {
 			var container = new UnityContainer();
             container.RegisterType<IManufacturerClient, ManufacturerClient>();
+            container.RegisterType<IProductClient, ProductClient>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }
