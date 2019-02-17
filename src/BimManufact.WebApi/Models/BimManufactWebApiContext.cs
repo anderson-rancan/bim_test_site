@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace BimManufact.WebApi.Models
 {
@@ -34,6 +31,7 @@ namespace BimManufact.WebApi.Models
         }
 
         public DbSet<Manufacturer> Manufacturers { get; set; }
+        public DbSet<ManufacturerLogo> ManufacturerLogos { get; set; }
         public DbSet<Product> Products { get; set; }
     }
 }

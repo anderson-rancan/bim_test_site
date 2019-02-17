@@ -8,6 +8,8 @@ namespace BimManufact.WebApi.Models
     {
         public ICollection<Product> Products { get; set; }
 
+        public virtual ManufacturerLogo Logo { get; set; }
+
         [Required]
         public Guid AuditCreatedBy { get; set; }
 

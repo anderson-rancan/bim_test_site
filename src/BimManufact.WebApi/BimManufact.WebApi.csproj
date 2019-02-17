@@ -179,10 +179,15 @@
     <Compile Include="Migrations\201902161710301_AddedAuditInfo.Designer.cs">
       <DependentUpon>201902161710301_AddedAuditInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902172319213_ManufacturerLogo.cs" />
+    <Compile Include="Migrations\201902172319213_ManufacturerLogo.Designer.cs">
+      <DependentUpon>201902172319213_ManufacturerLogo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BimManufactWebApiContext.cs" />
     <Compile Include="Models\Manufacturer.cs" />
     <Compile Include="Models\ManufacturerBase.cs" />
+    <Compile Include="Models\ManufacturerLogo.cs" />
     <Compile Include="Models\ManufacturerRequest.cs" />
     <Compile Include="Models\ManufacturerResponse.cs" />
     <Compile Include="Models\Product.cs" />
@@ -234,6 +239,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902161710301_AddedAuditInfo.resx">
       <DependentUpon>201902161710301_AddedAuditInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902172319213_ManufacturerLogo.resx">
+      <DependentUpon>201902172319213_ManufacturerLogo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
