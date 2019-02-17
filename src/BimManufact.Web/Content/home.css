@@ -7,8 +7,8 @@
 
 .home .manufact_row .logo {
     display: table-cell;
-    height: 128px;
-    width: 128px;
+    height: 256px;
+    width: 256px;
     background-color: darkblue;
 }
 
@@ -21,8 +21,7 @@
 .home .manufact_row .buttons {
     align-items: center;
     display: flex;
-    height: 128px;
+    height: 256px;
     float: right;
-
 }
 

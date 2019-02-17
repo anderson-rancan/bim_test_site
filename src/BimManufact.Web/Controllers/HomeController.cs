@@ -1,58 +1,34 @@
 ﻿using BimManufact.Web.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace BimManufact.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ControllerBase
     {
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             IEnumerable<ManufacturerViewModel> members = null;
 
-            using (var client = new HttpClient())
+            using (var client = GetWebApiClient())
             {
-                client.BaseAddress = new Uri("http://localhost:50335/api/");
+                var response = await client.GetAsync("manufacturers");
 
-                var responseTask = client.GetAsync("manufacturers");
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-
-                if (result.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
-                    var readTask = result.Content.ReadAsAsync<IList<ManufacturerViewModel>>();
-                    readTask.Wait();
-
-                    members = readTask.Result;
+                    members = await response.Content.ReadAsAsync<IList<ManufacturerViewModel>>();
                 }
                 else
                 {
                     members = Enumerable.Empty<ManufacturerViewModel>();
-
-                    ModelState.AddModelError(string.Empty, "Server error try after some time.");
+                    ModelState.AddModelError(string.Empty, "Server error, please try again.");
                 }
             }
 
             return View(members);
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
         }
 
         public ActionResult Create()
@@ -60,9 +36,50 @@ namespace BimManufact.Web.Controllers
             return View();
         }
 
-        public ActionResult Update()
+        public async Task<ActionResult> Update(int id = -1)
         {
-            return View();
+            if (id < 0)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "Mandatory argument was not specified");
+            }
+
+            ManufacturerRequestViewModel request = null;
+
+            using (var client = GetWebApiClient())
+            {
+                var response = await client.GetAsync($"manufacturers/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    request = await response.Content.ReadAsAsync<ManufacturerRequestViewModel>();
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Server error, please try again.");
+                }
+            }
+
+            return View(request);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Update(ManufacturerRequestViewModel request)
+        {
+            using (var client = GetWebApiClient())
+            {
+                var result = await client.PutAsJsonAsync($"manufacturers/{request.ManufacturerId}", request);
+
+                if (result.IsSuccessStatusCode)
+                {
+                    ViewBag.Alert = "The manufacturer was successfully updated!";
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Server error, please try again.");
+                }
+            }
+
+            return View(request);
         }
     }
 }
