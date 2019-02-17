@@ -53,7 +53,6 @@ namespace BimManufact.WebApi.Controllers
         }
 
         [Route("api/manufacturers/{manufacturerId}/logo")]
-        [ResponseType(typeof(System.Drawing.Image))]
         public IHttpActionResult GetManufacturerLogo(int manufacturerId)
         {
             using (var stream = new System.IO.MemoryStream())
@@ -146,6 +145,20 @@ namespace BimManufact.WebApi.Controllers
             };
 
             return CreatedAtRoute(nameof(GetManufacturer), new { manufacturerId = response.ManufacturerId }, response);
+        }
+
+        [Route("api/manufacturers/{manufacturerId}/logo")]
+        public async Task<IHttpActionResult> PostManufacturerLogo(int manufacturerId)
+        {
+            System.Drawing.Image image = null;
+            var imageBytes = Convert.FromBase64String(await Request.Content.ReadAsStringAsync());
+
+            using (var stream = new System.IO.MemoryStream(imageBytes))
+            {
+                image = System.Drawing.Image.FromStream(stream);
+            }
+
+            return Ok();
         }
 
         [Route("api/manufacturers/{manufacturerId}")]

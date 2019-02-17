@@ -1,6 +1,11 @@
 ﻿.home {
 }
 
+    .home .create .file_progress {
+        margin: 10px 0 0 0;
+        width: 150px;
+    }
+
     .home .manufact_row {
         padding: 10px 0 10px 0;
     }
@@ -9,7 +14,6 @@
             display: table-cell;
             height: 256px;
             width: 256px;
-            background-color: darkblue;
         }
 
         .home .manufact_row .details {

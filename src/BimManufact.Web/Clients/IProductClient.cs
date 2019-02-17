@@ -10,6 +10,7 @@ namespace BimManufact.Web.Clients
         Task<HttpResponseMessage> GetManufacturerProductImage(int manufacturerId, int productId);
         Task<HttpResponseMessage> GetManufacturerProducts(int manufacturerId);
         Task<HttpResponseMessage> PostManufacturerProduct<T>(int manufacturerId, T value);
+        Task<HttpResponseMessage> PostManufacturerProductImage(int manufacturerId, int productId, System.Drawing.Image image);
         Task<HttpResponseMessage> PutManufacturerProduct<T>(int manufacturerId, int productId, T value);
     }
 }

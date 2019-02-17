@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -47,9 +46,16 @@ namespace BimManufact.Web.Controllers
         public async Task<ActionResult> Create(ManufacturerRequestViewModel request)
         {
             var result = await _client.PostManufacturer(request);
+            var newViewModel = await result.Content.ReadAsAsync<ManufacturerRequestViewModel>();
 
             if (result.IsSuccessStatusCode)
             {
+                if (Request.Files.Count > 0)
+                {
+                    var image = System.Drawing.Image.FromStream(Request.Files[0].InputStream);
+                    var logoResult = await _client.PostManufacturerLogo(newViewModel.ManufacturerId, image);
+                }
+
                 TempData["SuccessAlert"] = $"The '{ request.Name }' manufacturer was successfully created!";
                 return RedirectToAction(nameof(Index));
             }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Web;
 
 namespace BimManufact.Web.Models
 {
@@ -9,5 +10,7 @@ namespace BimManufact.Web.Models
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
+
+        public HttpPostedFile Logo { get; set; }
     }
 }

@@ -1,11 +1,9 @@
 ﻿using BimManufact.Web.Clients;
 using BimManufact.Web.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace BimManufact.Web.Controllers
@@ -65,9 +63,16 @@ namespace BimManufact.Web.Controllers
         public async Task<ActionResult> Create(ProductViewModel request)
         {
             var result = await _productClient.PostManufacturerProduct(request.ManufacturerId, request);
+            var newViewModel = await result.Content.ReadAsAsync<ProductViewModel>();
 
             if (result.IsSuccessStatusCode)
             {
+                if (Request.Files.Count > 0)
+                {
+                    var image = System.Drawing.Image.FromStream(Request.Files[0].InputStream);
+                    await _productClient.PostManufacturerProductImage(newViewModel.ManufacturerId, newViewModel.ProductId, image);
+                }
+
                 TempData["ProductSuccessAlert"] = $"The '{ request.Name }' product was successfully created!";
                 return RedirectToAction(nameof(Index), new { request.ManufacturerId });
             }

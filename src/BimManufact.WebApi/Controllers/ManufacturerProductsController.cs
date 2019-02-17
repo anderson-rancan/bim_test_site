@@ -161,6 +161,20 @@ namespace BimManufact.WebApi.Controllers
             return CreatedAtRoute(nameof(GetProduct), new { manufacturerId = response.ManufacturerId, productId = response.ProductId }, response);
         }
 
+        [Route("api/manufacturers/{manufacturerId}/products/{productId}/image")]
+        public async Task<IHttpActionResult> PostProductImage(int manufacturerId, int productId)
+        {
+            System.Drawing.Image image = null;
+            var imageBytes = Convert.FromBase64String(await Request.Content.ReadAsStringAsync());
+
+            using (var stream = new System.IO.MemoryStream(imageBytes))
+            {
+                image = System.Drawing.Image.FromStream(stream);
+            }
+
+            return Ok();
+        }
+
         [Route("api/manufacturers/{manufacturerId}/products/{productId}")]
         [ResponseType(typeof(ProductResponse))]
         public async Task<IHttpActionResult> DeleteProduct(int manufacturerId, int productId)

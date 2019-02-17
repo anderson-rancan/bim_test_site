@@ -1,6 +1,11 @@
 ﻿.manufacturer {
 }
 
+    .manufacturer .create .file_progress {
+        margin: 10px 0 0 0;
+        width: 150px;
+    }
+
     .manufacturer .add_button {
         margin: 0 0 10px 0;
     }
@@ -13,7 +18,6 @@
             display: table-cell;
             height: 256px;
             width: 256px;
-            background-color: darkblue;
         }
 
         .manufacturer .manufact_row .details {
@@ -30,7 +34,6 @@
         .manufacturer .row .product .image {
             height: 256px;
             width: 256px;
-            background-color: antiquewhite;
             margin: 5px 5px 5px 5px;
             display: inline-block;
         }

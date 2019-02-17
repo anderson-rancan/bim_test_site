@@ -10,6 +10,7 @@ namespace BimManufact.Web.Clients
         Task<HttpResponseMessage> GetManufacturerLogo(int id);
         Task<HttpResponseMessage> GetManufacturers();
         Task<HttpResponseMessage> PostManufacturer<T>(T value);
+        Task<HttpResponseMessage> PostManufacturerLogo(int id, System.Drawing.Image image);
         Task<HttpResponseMessage> PutManufacturer<T>(int id, T value);
     }
 }

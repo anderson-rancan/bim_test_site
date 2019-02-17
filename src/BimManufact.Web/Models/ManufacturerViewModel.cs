@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BimManufact.Web.Models
+﻿namespace BimManufact.Web.Models
 {
     public class ManufacturerViewModel : ManufacturerRequestViewModel
     {

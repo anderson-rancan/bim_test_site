@@ -49,6 +49,22 @@ namespace BimManufact.Web.Clients
             }
         }
 
+        public async Task<HttpResponseMessage> PostManufacturerLogo(int id, System.Drawing.Image image)
+        {
+            using (var stream = new System.IO.MemoryStream())
+            {
+                image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                var bytes = stream.ToArray();
+                var base64 = System.Convert.ToBase64String(bytes);
+
+                using (var client = GetWebApiClient())
+                {
+                    var stringContent = new StringContent(base64, System.Text.Encoding.UTF8, "application/json");
+                    return await client.PostAsync(string.Format(_getManufacturerLogoAddress, id), stringContent);
+                }
+            }
+        }
+
         public async Task<HttpResponseMessage> PutManufacturer<T>(int id, T value)
         {
             using (var client = GetWebApiClient())
