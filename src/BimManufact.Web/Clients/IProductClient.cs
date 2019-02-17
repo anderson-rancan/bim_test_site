@@ -7,6 +7,7 @@ namespace BimManufact.Web.Clients
     {
         Task<HttpResponseMessage> DeleteManufacturerProduct(int manufacturerId, int productId);
         Task<HttpResponseMessage> GetManufacturerProduct(int manufacturerId, int productId);
+        Task<HttpResponseMessage> GetManufacturerProductImage(int manufacturerId, int productId);
         Task<HttpResponseMessage> GetManufacturerProducts(int manufacturerId);
         Task<HttpResponseMessage> PostManufacturerProduct<T>(int manufacturerId, T value);
         Task<HttpResponseMessage> PutManufacturerProduct<T>(int manufacturerId, int productId, T value);

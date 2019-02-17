@@ -10,7 +10,7 @@
         <div class="row manufact_row">
             <div class="col-xs-12 col-md-8">
                 <div class="logo">
-
+                    <img src='@Url.Action("GetManufacturerLogo", "Home", new { id = Model.Manufacturer.ManufacturerId })' />
                 </div>
                 <div class="details">
                     <h2><b>@Model.Manufacturer.Name</b> products</h2>
@@ -47,7 +47,9 @@
                 @foreach (var product in Model.Products.Skip(counter).Take(3))
                 {
                     <div class="col-md-4 product" id="product@(product.ProductId.ToString("000"))">
-                        <div class="image"></div>
+                        <div class="image">
+                            <img src='@Url.Action("GetManufacturerProductImage", "Manufacturer", new { manufacturerId = product.ManufacturerId, id = product.ProductId })' />
+                        </div>
                         <div class="product_name">@product.Name</div>
 
                         <div class="buttons">

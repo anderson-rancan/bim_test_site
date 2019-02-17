@@ -134,5 +134,13 @@ namespace BimManufact.Web.Controllers
 
             return View(request);
         }
+
+        public async Task<ActionResult> GetManufacturerProductImage(int manufacturerId, int id)
+        {
+            var response = await _productClient.GetManufacturerProductImage(manufacturerId, id);
+            var result = await response.Content.ReadAsByteArrayAsync();
+
+            return File(result, "image/png");
+        }
     }
 }

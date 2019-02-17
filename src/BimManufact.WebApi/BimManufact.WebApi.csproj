@@ -190,12 +190,18 @@
     <Compile Include="Models\ProductRequest.cs" />
     <Compile Include="Models\ProductResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resolver\DummyUserResolver.cs" />
     <Compile Include="Resolver\UnityDependencyResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <None Include="Images\no_image_info.png" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -228,6 +234,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902161710301_AddedAuditInfo.resx">
       <DependentUpon>201902161710301_AddedAuditInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

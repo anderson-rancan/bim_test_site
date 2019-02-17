@@ -7,6 +7,7 @@ namespace BimManufact.Web.Clients
     {
         private readonly string _getManufacturersAddress = "manufacturers";
         private readonly string _getManufacturerAddress = "manufacturers/{0}";
+        private readonly string _getManufacturerLogoAddress = "manufacturers/{0}/logo";
 
         public async Task<HttpResponseMessage> DeleteManufacturer(int id)
         {
@@ -21,6 +22,14 @@ namespace BimManufact.Web.Clients
             using (var client = GetWebApiClient())
             {
                 return await client.GetAsync(string.Format(_getManufacturerAddress, id));
+            }
+        }
+
+        public async Task<HttpResponseMessage> GetManufacturerLogo(int id)
+        {
+            using (var client = GetWebApiClient())
+            {
+                return await client.GetAsync(string.Format(_getManufacturerLogoAddress, id));
             }
         }
 

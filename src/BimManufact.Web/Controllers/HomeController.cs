@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -119,6 +120,14 @@ namespace BimManufact.Web.Controllers
             }
 
             return View(request);
+        }
+
+        public async Task<ActionResult> GetManufacturerLogo(int id)
+        {
+            var response = await _client.GetManufacturerLogo(id);
+            var result = await response.Content.ReadAsByteArrayAsync();
+
+            return File(result, "image/png");
         }
     }
 }

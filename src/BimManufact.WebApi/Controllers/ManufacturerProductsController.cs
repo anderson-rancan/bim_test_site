@@ -57,6 +57,22 @@ namespace BimManufact.WebApi.Controllers
             return Ok(response);
         }
 
+        [Route("api/manufacturers/{manufacturerId}/products/{productId}/image")]
+        [ResponseType(typeof(System.Drawing.Image))]
+        public IHttpActionResult GetProductLogo(int manufacturerId, int productId)
+        {
+            using (var stream = new System.IO.MemoryStream())
+            {
+                Properties.Resources.no_image_info.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+
+                var result = new System.Net.Http.HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new System.Net.Http.ByteArrayContent(stream.ToArray());
+                result.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+
+                return ResponseMessage(result);
+            }
+        }
+
         [Route("api/manufacturers/{manufacturerId}/products/{productId}")]
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutProduct(int manufacturerId, int productId, ProductRequest productRequest)
