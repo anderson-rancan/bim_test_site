@@ -1,9 +1,9 @@
-﻿using BimManufact.Web.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using BimManufact.Web.Models;
 
 namespace BimManufact.Web.Controllers
 {
@@ -28,12 +28,33 @@ namespace BimManufact.Web.Controllers
                 }
             }
 
-            return View(members);
+            return View(members.OrderBy(_ => _.Name));
         }
 
         public ActionResult Create()
         {
-            return View();
+            return View(new ManufacturerRequestViewModel());
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(ManufacturerRequestViewModel request)
+        {
+            using (var client = GetWebApiClient())
+            {
+                var result = await client.PostAsJsonAsync($"manufacturers", request);
+
+                if (result.IsSuccessStatusCode)
+                {
+                    TempData["SuccessAlert"] = $"The '{ request.Name }' manufacturer was successfully created!";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Server error, please try again.");
+                }
+            }
+
+            return View(request);
         }
 
         public async Task<ActionResult> Update(int id = -1)
@@ -71,7 +92,7 @@ namespace BimManufact.Web.Controllers
 
                 if (result.IsSuccessStatusCode)
                 {
-                    ViewBag.Alert = "The manufacturer was successfully updated!";
+                    TempData["SuccessAlert"] = "The manufacturer was successfully updated!";
                 }
                 else
                 {

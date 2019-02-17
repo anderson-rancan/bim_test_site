@@ -9,6 +9,14 @@
         <h2><b>@Model.Name</b> update</h2>
     </div>
 
+    @if (TempData.ContainsKey("SuccessAlert"))
+    {
+        <div class="alert alert-success fade in" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> @TempData["SuccessAlert"]
+        </div>
+    }
+
     @using (Html.BeginForm("Update", "Home"))
     {
         <div class="form-horizontal">
@@ -30,14 +38,6 @@
                     <input type="submit" value="Save" class="btn btn-default" />
                 </div>
             </div>
-        </div>
-    }
-
-    @if (!string.IsNullOrWhiteSpace(ViewBag.Alert))
-    {
-        <div class="alert alert-success fade in" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>Success!</strong> @ViewBag.Alert
         </div>
     }
 
