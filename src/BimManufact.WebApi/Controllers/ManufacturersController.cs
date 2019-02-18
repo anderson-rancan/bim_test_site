@@ -53,17 +53,33 @@ namespace BimManufact.WebApi.Controllers
         }
 
         [Route("api/manufacturers/{manufacturerId}/logo")]
-        public IHttpActionResult GetManufacturerLogo(int manufacturerId)
+        public async Task<IHttpActionResult> GetManufacturerLogo(int manufacturerId)
         {
-            using (var stream = new System.IO.MemoryStream())
+            var manufacturerLogo = await WebApiContext.ManufacturerLogos.FirstOrDefaultAsync(_ => _.ManufacturerLogoId == manufacturerId);
+
+            if (manufacturerLogo?.Content != null)
             {
-                Properties.Resources.no_image_info.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                using (var stream = new System.IO.MemoryStream(manufacturerLogo.Content))
+                {
+                    var result = new System.Net.Http.HttpResponseMessage(HttpStatusCode.OK);
+                    result.Content = new System.Net.Http.ByteArrayContent(stream.ToArray());
+                    result.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
 
-                var result = new System.Net.Http.HttpResponseMessage(HttpStatusCode.OK);
-                result.Content = new System.Net.Http.ByteArrayContent(stream.ToArray());
-                result.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                    return ResponseMessage(result);
+                }
+            }
+            else
+            {
+                using (var stream = new System.IO.MemoryStream())
+                {
+                    Properties.Resources.no_image_info.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
 
-                return ResponseMessage(result);
+                    var result = new System.Net.Http.HttpResponseMessage(HttpStatusCode.OK);
+                    result.Content = new System.Net.Http.ByteArrayContent(stream.ToArray());
+                    result.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+
+                    return ResponseMessage(result);
+                }
             }
         }
 
@@ -150,12 +166,46 @@ namespace BimManufact.WebApi.Controllers
         [Route("api/manufacturers/{manufacturerId}/logo")]
         public async Task<IHttpActionResult> PostManufacturerLogo(int manufacturerId)
         {
-            System.Drawing.Image image = null;
             var imageBytes = Convert.FromBase64String(await Request.Content.ReadAsStringAsync());
+            var manufacturer = await WebApiContext.Manufacturers.FirstOrDefaultAsync(_ => _.ManufacturerId == manufacturerId);
 
-            using (var stream = new System.IO.MemoryStream(imageBytes))
+            if (manufacturer != null)
             {
-                image = System.Drawing.Image.FromStream(stream);
+                var manufacturerLogo = await WebApiContext.ManufacturerLogos.FirstOrDefaultAsync(_ => _.ManufacturerLogoId == manufacturerId);
+
+                if (manufacturerLogo == null)
+                {
+                    var newLogo = new ManufacturerLogo
+                    {
+                        Content = imageBytes,
+                        Manufacturer = manufacturer,
+                        ManufacturerLogoId = manufacturer.ManufacturerId
+                    };
+
+                    WebApiContext.ManufacturerLogos.Add(newLogo);
+                    await WebApiContext.SaveChangesAsync();
+                }
+                else
+                {
+                    manufacturerLogo.Content = imageBytes;
+                    WebApiContext.Entry(manufacturerLogo).State = EntityState.Modified;
+
+                    try
+                    {
+                        await WebApiContext.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!await WebApiContext.ManufacturerLogos.AnyAsync(_ => _.ManufacturerLogoId == manufacturerId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
             }
 
             return Ok();

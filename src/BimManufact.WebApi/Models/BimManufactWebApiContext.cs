@@ -14,6 +14,7 @@ namespace BimManufact.WebApi.Models
         Task<int> SaveChangesAsync();
 
         DbSet<Manufacturer> Manufacturers { get; }
+        DbSet<ManufacturerLogo> ManufacturerLogos { get; set; }
         DbSet<Product> Products { get; set; }
     }
 

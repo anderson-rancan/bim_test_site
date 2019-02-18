@@ -10,11 +10,18 @@
         padding: 10px 0 10px 0;
     }
 
-        .home .manufact_row .logo {
+        .home .manufact_row .logo_container {
             display: table-cell;
             height: 256px;
             width: 256px;
         }
+
+            .home .manufact_row .logo_container .logo_image {
+                display: table-cell;
+                height: 100%;
+                width: 100%;
+                object-fit: contain;
+            }
 
         .home .manufact_row .details {
             display: table-cell;

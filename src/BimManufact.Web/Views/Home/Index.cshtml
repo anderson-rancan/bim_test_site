@@ -21,8 +21,8 @@
         {
             <div class="row manufact_row">
                 <div class="col-xs-12 col-md-8">
-                    <div class="logo">
-                        <img src='@Url.Action("GetManufacturerLogo", "Home", new { id = manufacturer.ManufacturerId })'/>
+                    <div class="logo_container">
+                        <img class="logo_image" src='@Url.Action("GetManufacturerLogo", "Home", new { id = manufacturer.ManufacturerId })'/>
                     </div>
                     <div class="details">
                         <h2>@manufacturer.Name</h2>

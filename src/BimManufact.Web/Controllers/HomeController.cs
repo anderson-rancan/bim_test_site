@@ -12,6 +12,7 @@ namespace BimManufact.Web.Controllers
     {
         private readonly IManufacturerClient _client;
         private readonly string _genericErrorMessage = "Server error, please try again.";
+        private readonly string[] _validImageExtensions = new[] { ".JPG", ".GIF", ".PNG" };
 
         public HomeController(IManufacturerClient client)
         {
@@ -50,7 +51,8 @@ namespace BimManufact.Web.Controllers
 
             if (result.IsSuccessStatusCode)
             {
-                if (Request.Files.Count > 0)
+                if (Request.Files.Count > 0
+                    && _validImageExtensions.Contains(System.IO.Path.GetExtension(Request.Files[0].FileName), System.StringComparer.OrdinalIgnoreCase))
                 {
                     var image = System.Drawing.Image.FromStream(Request.Files[0].InputStream);
                     var logoResult = await _client.PostManufacturerLogo(newViewModel.ManufacturerId, image);
