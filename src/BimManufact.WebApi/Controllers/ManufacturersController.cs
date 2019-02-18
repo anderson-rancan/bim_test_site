@@ -222,6 +222,30 @@ namespace BimManufact.WebApi.Controllers
                 return NotFound();
             }
 
+            var products = WebApiContext.Products
+                .Where(_ => _.ManufacturerId == manufacturerId);
+
+            var productImages = WebApiContext.ProductImages
+                .Where(_ => products.Any(p => p.ProductId == _.ProductImageId));
+
+            if (productImages.Any())
+            {
+                WebApiContext.ProductImages.RemoveRange(productImages);
+            }
+
+            if (products.Any())
+            {
+                WebApiContext.Products.RemoveRange(products);
+            }
+
+            var manufacturerLogo = await WebApiContext.ManufacturerLogos
+                .FirstOrDefaultAsync(_ => _.ManufacturerLogoId == manufacturerId);
+
+            if (manufacturerLogo != null)
+            {
+                WebApiContext.ManufacturerLogos.Remove(manufacturerLogo);
+            }
+
             WebApiContext.Manufacturers.Remove(manufacturer);
             await WebApiContext.SaveChangesAsync();
 

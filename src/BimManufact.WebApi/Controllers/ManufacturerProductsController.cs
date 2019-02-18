@@ -58,18 +58,33 @@ namespace BimManufact.WebApi.Controllers
         }
 
         [Route("api/manufacturers/{manufacturerId}/products/{productId}/image")]
-        [ResponseType(typeof(System.Drawing.Image))]
-        public IHttpActionResult GetProductLogo(int manufacturerId, int productId)
+        public async Task<IHttpActionResult> GetProductImage(int manufacturerId, int productId)
         {
-            using (var stream = new System.IO.MemoryStream())
+            var productImage = await WebApiContext.ProductImages.FirstOrDefaultAsync(_ => _.ProductImageId == productId);
+
+            if (productImage?.Content != null)
             {
-                Properties.Resources.no_image_info.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                using (var stream = new System.IO.MemoryStream(productImage.Content))
+                {
+                    var result = new System.Net.Http.HttpResponseMessage(HttpStatusCode.OK);
+                    result.Content = new System.Net.Http.ByteArrayContent(stream.ToArray());
+                    result.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
 
-                var result = new System.Net.Http.HttpResponseMessage(HttpStatusCode.OK);
-                result.Content = new System.Net.Http.ByteArrayContent(stream.ToArray());
-                result.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                    return ResponseMessage(result);
+                }
+            }
+            else
+            {
+                using (var stream = new System.IO.MemoryStream())
+                {
+                    Properties.Resources.no_image_info.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
 
-                return ResponseMessage(result);
+                    var result = new System.Net.Http.HttpResponseMessage(HttpStatusCode.OK);
+                    result.Content = new System.Net.Http.ByteArrayContent(stream.ToArray());
+                    result.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+
+                    return ResponseMessage(result);
+                }
             }
         }
 
@@ -164,12 +179,46 @@ namespace BimManufact.WebApi.Controllers
         [Route("api/manufacturers/{manufacturerId}/products/{productId}/image")]
         public async Task<IHttpActionResult> PostProductImage(int manufacturerId, int productId)
         {
-            System.Drawing.Image image = null;
             var imageBytes = Convert.FromBase64String(await Request.Content.ReadAsStringAsync());
+            var product = await WebApiContext.Products.FirstOrDefaultAsync(_ => _.ManufacturerId == manufacturerId && _.ProductId == productId);
 
-            using (var stream = new System.IO.MemoryStream(imageBytes))
+            if (product != null)
             {
-                image = System.Drawing.Image.FromStream(stream);
+                var productImage = await WebApiContext.ProductImages.FirstOrDefaultAsync(_ => _.ProductImageId == productId);
+
+                if (productImage == null)
+                {
+                    var newImage = new ProductImage
+                    {
+                        Content = imageBytes,
+                        Product = product,
+                        ProductImageId = productId
+                    };
+
+                    WebApiContext.ProductImages.Add(newImage);
+                    await WebApiContext.SaveChangesAsync();
+                }
+                else
+                {
+                    productImage.Content = imageBytes;
+                    WebApiContext.Entry(productImage).State = EntityState.Modified;
+
+                    try
+                    {
+                        await WebApiContext.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!await WebApiContext.ProductImages.AnyAsync(_ => _.ProductImageId == productId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
             }
 
             return Ok();
@@ -187,6 +236,14 @@ namespace BimManufact.WebApi.Controllers
             if (product == null)
             {
                 return NotFound();
+            }
+
+            var productImage = await WebApiContext.ProductImages
+                .FirstOrDefaultAsync(_ => _.ProductImageId == productId);
+
+            if (productImage != null)
+            {
+                WebApiContext.ProductImages.Remove(productImage);
             }
 
             WebApiContext.Products.Remove(product);

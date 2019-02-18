@@ -13,6 +13,7 @@ namespace BimManufact.Web.Controllers
         private readonly IManufacturerClient _manufacturerClient;
         private readonly IProductClient _productClient;
         private readonly string _genericErrorMessage = "Server error, please try again.";
+        private readonly string[] _validImageExtensions = new[] { ".JPG", ".GIF", ".PNG" };
 
         public ManufacturerController(IProductClient productClient, IManufacturerClient manufacturerClient)
         {
@@ -67,7 +68,8 @@ namespace BimManufact.Web.Controllers
 
             if (result.IsSuccessStatusCode)
             {
-                if (Request.Files.Count > 0)
+                if (Request.Files.Count > 0
+                    && _validImageExtensions.Contains(System.IO.Path.GetExtension(Request.Files[0].FileName), System.StringComparer.OrdinalIgnoreCase))
                 {
                     var image = System.Drawing.Image.FromStream(Request.Files[0].InputStream);
                     await _productClient.PostManufacturerProductImage(newViewModel.ManufacturerId, newViewModel.ProductId, image);
