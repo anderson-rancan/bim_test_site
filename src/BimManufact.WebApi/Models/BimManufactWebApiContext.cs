@@ -16,6 +16,7 @@ namespace BimManufact.WebApi.Models
         DbSet<Manufacturer> Manufacturers { get; }
         DbSet<ManufacturerLogo> ManufacturerLogos { get; set; }
         DbSet<Product> Products { get; set; }
+        DbSet<ProductImage> ProductImages { get; set; }
     }
 
     public class BimManufactWebApiContext : DbContext, IBimManufactWebApiContext
@@ -34,5 +35,6 @@ namespace BimManufact.WebApi.Models
         public DbSet<Manufacturer> Manufacturers { get; set; }
         public DbSet<ManufacturerLogo> ManufacturerLogos { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
     }
 }

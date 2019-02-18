@@ -183,6 +183,10 @@
     <Compile Include="Migrations\201902172319213_ManufacturerLogo.Designer.cs">
       <DependentUpon>201902172319213_ManufacturerLogo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902180008550_ProductImage.cs" />
+    <Compile Include="Migrations\201902180008550_ProductImage.Designer.cs">
+      <DependentUpon>201902180008550_ProductImage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BimManufactWebApiContext.cs" />
     <Compile Include="Models\Manufacturer.cs" />
@@ -192,6 +196,7 @@
     <Compile Include="Models\ManufacturerResponse.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\ProductBase.cs" />
+    <Compile Include="Models\ProductImage.cs" />
     <Compile Include="Models\ProductRequest.cs" />
     <Compile Include="Models\ProductResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -242,6 +247,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902172319213_ManufacturerLogo.resx">
       <DependentUpon>201902172319213_ManufacturerLogo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902180008550_ProductImage.resx">
+      <DependentUpon>201902180008550_ProductImage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

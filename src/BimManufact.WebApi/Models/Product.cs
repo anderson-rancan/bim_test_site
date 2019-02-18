@@ -5,6 +5,8 @@ namespace BimManufact.WebApi.Models
 {
     public class Product : ProductBase
     {
+        public virtual ProductImage Image { get; set; }
+
         [Required]
         public Guid AuditCreatedBy { get; set; }
 
